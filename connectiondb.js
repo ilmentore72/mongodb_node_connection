@@ -1,5 +1,5 @@
 const state = {db:null}
-
+const vr = require('./changeStream')
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 
@@ -13,8 +13,12 @@ module.exports = {
         const uri = process.env.CONN;
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
         await client.connect();
+
         state.db = client.db('test')
         console.log('connection established')
+        await vr.monitorListingsUsingEventEmitter(client,6000000000000)
+
+
     },
     get:()=>state.db
 }

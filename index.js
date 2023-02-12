@@ -3,9 +3,9 @@ const dotenv = require('dotenv')
 dotenv.config()
 const express = require("express");
 const app = express();
-
+const vr = require('./changeStream')
 db.connect()
-
+//vr.monitorListingsUsingEventEmitter(db,15000)
 
 app.get("/add",async (req,res)=>{
     await db.get().collection('test').insertOne({name:"Anoop"})
