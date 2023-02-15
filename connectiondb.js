@@ -16,7 +16,7 @@ module.exports = {
 
         state.db = client.db('test')
         console.log('connection established')
-        await vr.monitorListingsUsingEventEmitter(client,6000000000000)
+        await vr.monitorListingsUsingEventEmitter(client,600000)
 
 
     },
