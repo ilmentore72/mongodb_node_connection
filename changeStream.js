@@ -1,6 +1,6 @@
 //const db = require('./connectiondb')
 
-async function monitorListingsUsingEventEmitter(client, timeInMs = 60000, pipeline = []){  
+async function monitorListingsUsingEventEmitter(client, timeInMs = 600000, pipeline = []){  
     const collection = client.db('test').collection('test')
     const changeStream = collection.watch(pipeline)
     changeStream.on('change',(next)=>{
@@ -9,7 +9,7 @@ async function monitorListingsUsingEventEmitter(client, timeInMs = 60000, pipeli
     await closeChangeStream(timeInMs, changeStream)
 
 }
-function closeChangeStream(timeInMs = 60000, changeStream) {
+function closeChangeStream(timeInMs = 600000, changeStream) {
     return new Promise((resolve) => {
         setTimeout(() => {
             console.log("Closing the change stream");
