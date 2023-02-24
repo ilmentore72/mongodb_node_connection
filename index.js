@@ -15,14 +15,14 @@ app.get("/add",async (req,res)=>{
 
 app.get("/read",async (req,res)=>{
     const data = await db.get().collection('test').find().toArray();
-res.send(`<h2>${JSON.stringify(data)}</h2>`)
+res.json(data)
 })
 
 
 app.post("/addfirstdata" , async(req, res)=>
 {
     let id = req.body.id
-    let m = db.get().collection('test').findOne({id: id})
+    let m = await db.get().collection('test').findOne({id: id})
     if(m){
         await db.get().collection('test').updateOne({id:id},{$set:{"location":req.body.location}})
     }else{
@@ -39,7 +39,8 @@ app.post("/updatedataL" , async(req, res)=>
 {   
     
     let id = req.body.id
-    let m = db.get().collection('test').findOne({id: id})
+    let m = await db.get().collection('test').findOne({id: id})
+    console.log("gfcgccgchgc",m)
     if(m){
         await db.get().collection('test').updateOne({id:id},{$set:{"location":req.body.location}});
         const obj = {
