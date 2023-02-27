@@ -21,19 +21,29 @@ res.json(data)
 
 app.post("/addfirstdata" , async(req, res)=>
 {
+    var obj = {}
     let id = req.body.id
     let m = await db.get().collection('test').findOne({id: id})
     if(m){
-        await db.get().collection('test').updateOne({id:id},{$set:{"location":req.body.location}})
+        db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude}})
+
+        obj = {
+        "res":"succ updated"
+        }
+
     }else{
+
         await db.get().collection('test').insertOne(req.body)
+        
+        obj = {
+            "res":"succ created"
+        }
     }
+
     console.log('Got body:', req.body);
     
-    const obj = {
-        "res":"succ"
-    }
     res.json(obj);
+
 })
 app.post("/updatedataL" , async(req, res)=>
 {   
@@ -42,7 +52,7 @@ app.post("/updatedataL" , async(req, res)=>
     let m = await db.get().collection('test').findOne({id: id})
     console.log("gfcgccgchgc",m)
     if(m){
-        await db.get().collection('test').updateOne({id:id},{$set:{"location":req.body.location}});
+        await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude}});
         const obj = {
         "res":"succ update location"
     }
