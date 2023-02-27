@@ -25,8 +25,7 @@ app.post("/addfirstdata" , async(req, res)=>
     let id = req.body.id
     let m = await db.get().collection('test').findOne({id: id})
     if(m){
-        db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude}})
-
+        await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude}})
         obj = {
         "res":"succ updated"
         }
