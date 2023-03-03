@@ -4,7 +4,8 @@ dotenv.config()
 const express = require("express");
 const app = express();
 app.use(express.json())
-
+var clustering  = require('density-clustering');
+var dbscan = new clustering.DBSCAN();
 db.connect()
 
 app.get("/add",async (req,res)=>{
@@ -73,3 +74,26 @@ app.listen(3333,()=>{
     console.log("app listeing");
 })
 
+app.get("/cluster",async (req,res)=>{
+    const data = await db.get().collection('test').find().toArray();
+    var points = new Array()
+    var ids = new Array()
+    console.log(typeof points)
+    data.forEach(element => {
+        point = [element.latitude, element.longitude]
+        ids.push(element.id)
+        points.push(point)
+        
+    });
+    var clusters = dbscan.run(points, 1,2)  
+    clusters.forEach(cluster => 
+        {
+            console.log("Cluster " , cluster)
+            cluster.forEach(index=> {
+                console.log(ids[index])
+            })
+
+        });
+
+res.json(data)
+})
