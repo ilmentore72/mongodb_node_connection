@@ -51,7 +51,7 @@ app.post("/updatedataL" , async(req, res)=>
     let m = await db.get().collection('test').findOne({id: id})
     console.log("gfcgccgchgc",m)
     if(m){
-        await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude}});
+        await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude,"accident":req.body.accident,"block":req.body.block}});
         const obj = {
         "res":"succ update location"
     }
