@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 app.use(express.json())
 var clustering  = require('density-clustering');
+const findCentroid = require('centroid2d');
 const { Timestamp } = require("mongodb");
 var dbscan = new clustering.DBSCAN();
 db.connect()
@@ -111,6 +112,8 @@ app.get("/cluster",async (req,res)=>{
             })
 
         });
+        let centroid = findCentroid(points) 
+        console.log(centroid);
 
 res.json(data)
 })

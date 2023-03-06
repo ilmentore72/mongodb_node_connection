@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "centroid2d": "^2.0.0",
     "density-clustering": "^1.3.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
