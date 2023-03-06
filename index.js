@@ -53,14 +53,17 @@ app.post("/updatedataL" , async(req, res)=>
     let m = await db.get().collection('test').findOne({id: id})
     var moving = false
     if(m){
+
         console.log(Date.now())
-        //console.log(req.body.latitude)
+
         if(m.latitude != req.body.latitude || m.longitude != req.body.longitude){
             moving = true 
             console.log("moving detected")
         }
+
         await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude,"accident":req.body.accident,"block":req.body.block, 
     "moving" : moving}});
+
         const obj = {
         "res":"succ update location"
     }
@@ -83,17 +86,23 @@ app.listen(3333,()=>{
 })
 
 app.get("/cluster",async (req,res)=>{
-    const data = await db.get().collection('test').find().toArray();
+
+    const data = await db.get().collection('test').find( { moving: false } ).toArray();
+
+    
+
     var points = new Array()
     var ids = new Array()
-    console.log(typeof points)
+
     data.forEach(element => {
         point = [element.latitude, element.longitude]
         ids.push(element.id)
         points.push(point)
         
     });
-    var clusters = dbscan.run(points, 1,2)  
+
+    var clusters = dbscan.run(points,0.0006,1)  
+
     clusters.forEach(cluster => 
         {
             console.log("Cluster " , cluster)
