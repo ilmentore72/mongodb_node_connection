@@ -5,6 +5,7 @@ const express = require("express");
 const app = express();
 app.use(express.json())
 var clustering  = require('density-clustering');
+const { Timestamp } = require("mongodb");
 var dbscan = new clustering.DBSCAN();
 db.connect()
 
@@ -50,9 +51,16 @@ app.post("/updatedataL" , async(req, res)=>
     
     let id = req.body.id
     let m = await db.get().collection('test').findOne({id: id})
-    console.log("gfcgccgchgc",m)
+    var moving = false
     if(m){
-        await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude,"accident":req.body.accident,"block":req.body.block}});
+        console.log(Date.now())
+        //console.log(req.body.latitude)
+        if(m.latitude != req.body.latitude || m.longitude != req.body.longitude){
+            moving = true 
+            console.log("moving detected")
+        }
+        await db.get().collection('test').updateOne({id:id},{$set:{"latitude":req.body.latitude,"longitude":req.body.longitude,"accident":req.body.accident,"block":req.body.block, 
+    "moving" : moving}});
         const obj = {
         "res":"succ update location"
     }
