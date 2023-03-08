@@ -6,6 +6,7 @@ const app = express();
 app.use(express.json())
 var clustering  = require('density-clustering');
 const findCentroid = require('centroid2d');
+const mp = require('@turf/turf')
 const { Timestamp } = require("mongodb");
 const distance = require('euclidean-distance')
 var dbscan = new clustering.DBSCAN();
@@ -101,21 +102,32 @@ app.get("/cluster",async (req,res)=>{
         
     });
 
-    var clusters = dbscan.run(points,0.0006,1)
+    var clusters = dbscan.run(points,1,1)
 
     let sendData =[]
     clusters.map((cluster,ind) => 
         {
-            if(cluster.length <= 1) return
+            let radius = 0
+            if(cluster.length <= 1)
+            {
+                let v = points[ind]
+                let centroidx = v[0]
+                let centroidy = v[1]
+                sendData[ind] = {clusterPoints,centroidx,  centroidy,radius}
+            }
+
             console.log("Cluster " , cluster)
-            let radius = 0;
-            var clusterPoints = cluster.map(index=> points[index])
-            const centroid = findCentroid(clusterPoints)
+            var clusterPoints = cluster.map(index=> points[index], Number)
+            let cp2 = mp.points(clusterPoints)
+            //const centroid = findCentroid(clusterPoints)
+            const centroid = mp.center(cp2).geometry.coordinates
             cluster.map(index=> {
                 let [x,y] = points[index]
                 radius = Math.max(radius,distance(centroid,[x,y]))
             })
-            sendData[ind]={clusterPoints,centroid,radius}
+            let centroidx = centroid[0]
+            let centroidy = centroid[1]
+            sendData[ind]={clusterPoints,centroidx, centroidy,radius}
         });
     console.log(sendData)
     res.json(sendData)
