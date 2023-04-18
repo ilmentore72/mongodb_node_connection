@@ -4,7 +4,7 @@ async function monitorListingsUsingEventEmitter(client, timeInMs = 600000, pipel
     const collection = client.db('test').collection('test')
     const changeStream = collection.watch(pipeline)
     changeStream.on('change',(next)=>{
-        console.log(next)
+        //console.log(next)
     })
     await closeChangeStream(timeInMs, changeStream)
 
