@@ -23,6 +23,11 @@ app.get("/read", async (req, res) => {
   res.json(data);
 });
 
+app.get("/readNearby", async (req, res) => {
+  const data = await db.get().collection("nearby").find().toArray();
+  res.json(data);
+});
+
 app.get("/stopmoving", async (req, res) => {
   const data = await db.get().collection("test").find().toArray();
   data.forEach((doc) => {
