@@ -28,6 +28,16 @@ app.get("/readNearby", async (req, res) => {
   res.json(data);
 });
 
+app.get("/updateaccofother", async (req, res) => {
+  const data = await db.get().collection("test").find().toArray();
+  data.forEach((doc) => {
+    db.get()
+      .collection("test")
+      .updateOne({ _id: doc._id }, { $set: { accident: true } });
+  });
+  res.json(data);
+});
+
 app.get("/stopmoving", async (req, res) => {
   const data = await db.get().collection("test").find().toArray();
   data.forEach((doc) => {
