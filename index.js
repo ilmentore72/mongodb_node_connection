@@ -7,7 +7,7 @@ app.use(express.json());
 var clustering = require("density-clustering");
 const findCentroid = require("centroid2d");
 const mp = require("@turf/turf");
-const { Timestamp } = require("mongodb");
+const { Timestamp, ObjectId } = require("mongodb");
 const distance = require("euclidean-distance");
 var dbscan = new clustering.DBSCAN();
 db.connect();
@@ -28,13 +28,15 @@ app.get("/readNearby", async (req, res) => {
   res.json(data);
 });
 
-app.get("/updateaccofother", async (req, res) => {
-  const data = await db.get().collection("test").find().toArray();
-  data.forEach((doc) => {
-    db.get()
-      .collection("test")
-      .updateOne({ _id: doc._id }, { $set: { accident: true } });
-  });
+app.post("/updateaccofother", async (req, res) => {
+  let data = await db.get().collection("test").find().toArray();
+  data = data.filter(
+    (item) => item.id.toString().slice(item.id.length - 7) === req.body.did
+  )[0];
+  await db
+    .get()
+    .collection("test")
+    .updateOne({ _id: data._id }, { $set: { accident: !data.accident } });
   res.json(data);
 });
 
@@ -168,4 +170,18 @@ app.get("/cluster", async (req, res) => {
   });
   console.log("senddata", sendData);
   res.json(sendData);
+});
+
+app.get("/reset", async (req, res) => {
+  let data = await db.get().collection("test").find().toArray();
+  data.forEach((doc) => {
+    db.get()
+      .collection("test")
+      .updateOne(
+        { _id: doc._id },
+        { $set: { moving: false, accident: false } }
+      );
+  });
+  data = await db.get().collection("test").find().toArray();
+  res.json(data);
 });
